@@ -1,6 +1,7 @@
 {
-    "name": "awalker/awmvc",
-    "description": "My MVC framework for PHP 5.3+",
+    "name": "awalker/sophrosync-mvc",
+    "description": "Yet another MVC framework for PHP 5.3+",
+    "version": "0.0.1",
     "license": "MIT",
     "authors": [
         {
@@ -19,7 +20,8 @@
         "psr-4": {
           "Base\\" : "base/",
           "" : "src/"
-        }
+        },
+        "files": ["util/common.php"]
     },
 
     "require": {
