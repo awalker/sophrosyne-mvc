@@ -1,13 +1,13 @@
 <?php
 namespace Base;
 
-/*
-      __  ___          __     __   ________
-     /  |/  /___  ____/ /__  / /  / ____/ /___ ___________
-    / /|_/ / __ \/ __  / _ \/ /  / /   / / __ `/ ___/ ___/
-   / /  / / /_/ / /_/ /  __/ /  / /___/ / /_/ (__  |__  )
-  /_/  /_/\____/\__,_/\___/_/   \____/_/\__,_/____/____/
-
+/**
+ * Model class for database backed model object.
+ *
+ * When making your model classes add, at a minimum, a static property
+ * for $_tablename. Declaring $_alias is a good idea if you will ever use the model
+ * in joins. Declare $_id if your id field is named something other than "id". Use
+ * $allowedFields to resist which model properties are saved to the database.
  */
 class Model {
   /*
@@ -38,6 +38,7 @@ class Model {
     / /___/ /_/ / / / (__  ) /_/ /  / /_/ / /__/ /_/ /_/ / /
     \____/\____/_/ /_/____/\__/_/   \__,_/\___/\__/\____/_/
 
+    FIXME: remove global $pdo dependency.
    */
   public function __construct($connection = null) {
     global $pdo;
@@ -189,6 +190,9 @@ class Model {
     return $select->where($where);
   }
 
+  /*
+  FIXME: This is just too complex when looking at code that uses it.
+   */
   public function manyToMany($dstClass, $fk, $joinTable, $jtfk) {
     $dstAlias = $dstClass::getAlias();
     $dstPk = $dstClass::getPkField();
