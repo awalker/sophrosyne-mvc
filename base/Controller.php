@@ -2,7 +2,7 @@
 namespace Base;
 
 /**
- * The Base Controller class. Already lightly adapted to Taco Mac.
+ * The Base Controller class.
  */
 class Controller {
 
@@ -11,14 +11,14 @@ class Controller {
   public $_debug = false;
   public $template = "layouts/layout";
   public $outputType = "Html";
-  public $cssTemplates = array('layouts/tacomac_styles');
+  public $cssTemplates = array();
   public $clientCss = '';
-  public $menu = '<div><h1>Taco Mac Brewniversity</h1></div>';
+  public $menu = '<div><h1>Project</h1></div>';
   public $menuView = false;
   public $scripts = array();
   public $advancedScripts = array();
-  public $title = 'Taco Mac Brewniversity';
-  public $seoDescription = 'Taco Mac Brewniversity';
+  public $title = null;
+  public $seoDescription = null;
   public $shortcut_icon = false;
   public $theme = NULL;
   public $frameworkPackage = "";
