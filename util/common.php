@@ -48,6 +48,7 @@ function isId($id) {
   return false;
 }
 
+// FIXME: This is specific to one client. Generalize
 function isProduction() {
   if(IS_COMMAND && stripos(getenv('PWD'), 'dev_area') === false) {
     return true;
@@ -78,6 +79,11 @@ function dump()
   return $string;
 }
 
+/**
+ * For times with dump consumes too much memory.
+ * @param  mixed $array an array or object dump
+ * @return String        HTML
+ */
 function dump_truncated_array($array) {
   $string = '<br>';
   if (is_array($array) && count($array) === 0) {
@@ -93,6 +99,9 @@ function dump_truncated_array($array) {
   return $string;
 }
 
+/**
+ * An even more compact dump of any value. Takes multiple parameters and dumps them all.
+ */
 function dump_truncated() {
   $string = array();
   foreach (func_get_args() as $value)
@@ -190,11 +199,16 @@ function get_package() {
   if ($package) return $package;
   return $package = json_decode(file_get_contents(SP . 'package.json'));
 }
-
+/**
+ * Should JavaScript assets should used minified?
+ */
 function js_asset_min() {
   return true;
 }
 
+/**
+ * Get a url to a JavaScript asset.
+ */
 function js_asset_url($path = NULL, array $params = NULL)
 {
   $isJs = true;
@@ -212,13 +226,6 @@ function js_asset_url($path = NULL, array $params = NULL)
   return site_url('assets/' . $prefix . $filename . $ext, $params);
 }
 
-
-function js_url($path = NULL)
-{
-  $base = isProduction() ? '/' : '/tmp/';
-  return $base . $path;
-}
-
 /**
  * Convert special characters to HTML safe entities.
  *
@@ -230,6 +237,10 @@ function h($string)
   return htmlspecialchars($string, ENT_QUOTES, 'utf-8');
 }
 
+/**
+ * Like h but has special handling for missing values and highlighting dangerous item.
+ * FIXME: too specific to one project
+ */
 function hm($string, $missing = 'missing', &$isOk)
 {
   if($string) {
@@ -240,14 +251,25 @@ function hm($string, $missing = 'missing', &$isOk)
   }
 }
 
-function truncate($string, $limit = 80) {
+/**
+ * Truncate $string to at most $limit characters.
+ * @param  String  $string Target string
+ * @param  integer $limit  desired limit
+ * @param  String $more  The text to add to the the string
+ * @param  integer $moreLength The length of $more which could be HTML
+ * @return String          shorted string
+ */
+function truncate($string, $limit = 80, $more = '…', $moreLength = 1) {
   if(!$string) return '';
   if(strlen($string) > $limit) {
-    return h(trim(substr($string, 0, $limit-1)) . '…');
+    return h(trim(substr($string, 0, $limit-$moreLength)) . $more);
   }
   return h(trim($string));
 }
 
+/**
+ * Truncate to 40 characters.
+ */
 function truncate40($string) {
   return truncate($string, 40);
 }
@@ -330,18 +352,39 @@ function colorize($text, $color, $bold = FALSE)
   return"\033[" . ($bold ? '1' : '0') . ';' . $colors[$color] . "m$text\033[0m";
 }
 
+/**
+ * Convert $s to title case.
+ * @param  String $s input
+ * @return String    Converted
+ */
 function titleCase($s) {
   return mb_convert_case($s, MB_CASE_TITLE);
 }
 
+/**
+ * Convert $s to lowercase. Eg. "Hi" -> "hi"
+ * @param  String $s input
+ * @return String    Converted
+ */
 function lowerCase($value) {
   return mb_convert_case($value, MB_CASE_LOWER);
 }
 
+/**
+ * Convert $s to uppercase. Eg. "Hi" -> "HI"
+ * @param  String $s input
+ * @return String    Converted
+ */
 function upperCase($value) {
   return mb_convert_case($value, MB_CASE_UPPER);
 }
 
+/**
+ * Convent $s to camelCase. Eg. "Hi Bob" -> "HiBob" and "foo_bar" -> 'FooBar'
+ * @param  String $s input
+ * @param  Boolean $initalCap should the first letter be capitalized?
+ * @return String    Converted
+ */
 function camelCase($s, $initalCap = true) {
   if(strpos($s, '_') !== FALSE) {
     // is foo_bar style
@@ -373,6 +416,11 @@ function camelCase($s, $initalCap = true) {
   return implode('', $parts);
 }
 
+/**
+ * Convert $s to snakeCase. Eg. 'FooBar' -> 'foo_bar'
+ * @param  String $s input
+ * @return String    Converted
+ */
 function snakeCase($s) {
   if(strpos($s, ' ') !== FALSE) {
     // is "foo bar" style
@@ -398,6 +446,11 @@ function snakeCase($s) {
   return $out;
 }
 
+/**
+ * Make $s more pleasing to humans. Eg. 'FooBar' -> 'Foo Bar'
+ * @param  String $s input
+ * @return String    Converted
+ */
 function humanize($s) {
   $parts = preg_split("/([A-Z0-9]+[a-z0-9]+)/", $s, -1, PREG_SPLIT_DELIM_CAPTURE);
   // foreach ($parts as $index => $p) {
@@ -406,11 +459,22 @@ function humanize($s) {
   return trim(implode(' ', $parts));
 }
 
+/**
+ * Make $s more pleasing to humans. Eg. 'FooBar' -> 'Foo bar'
+ * @param  String $s input
+ * @return String    Converted
+ */
 function humanize2($s) {
   $parts = preg_split("/[^0-9A-Z]/i", $s);
   return trim(titleCase(implode(' ', $parts)));
 }
 
+/**
+ * Formats a number into a dollar amount.
+ * @param  [type] $num    [description]
+ * @param  string $prefix [description]
+ * @return [type]         [description]
+ */
 function dollar($num, $prefix = "$") {
   if($num < 0 ) {
     return sprintf("-%s%0.02f", $prefix, -1 * $num);
