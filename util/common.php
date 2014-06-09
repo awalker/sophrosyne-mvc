@@ -51,9 +51,14 @@ function isId($id) {
 function isProduction() {
   $mode = getenv('SMVC_MODE');
   if ($mode) {
-    return $mode == 'PRODUCTION';
+    switch ($mode) {
+      case 'PRODUCTION': return true; break;
+      case 'TEST': return false; break;
+      case 'DEV': return false; break;
+      case 'DEBUG': return false; break;
+    }
   }
-  return false;
+  return true;
 }
 
 function isTest() {
