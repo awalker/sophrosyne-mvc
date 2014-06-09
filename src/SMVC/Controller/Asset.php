@@ -1,5 +1,5 @@
 <?php
-namespace Sophrosyne\Controller;
+namespace SMVC\Controller;
 
 class Asset extends \Base\Controller {
   public static $mapping = array(
