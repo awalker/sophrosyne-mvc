@@ -18,7 +18,6 @@
 
     "autoload": {
         "psr-4": {
-          "Base\\" : "base/",
           "" : "src/"
         },
         "files": ["util/common.php"]
