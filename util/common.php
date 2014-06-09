@@ -48,14 +48,17 @@ function isId($id) {
   return false;
 }
 
-// FIXME: This is specific to one client. Generalize
 function isProduction() {
-  if(IS_COMMAND && stripos(getenv('PWD'), 'dev_area') === false) {
-    return true;
-  } else if(!IS_COMMAND && stripos(DOMAIN, 'demo.') === false) {
-    return true; // is production
+  $mode = getenv('SMVC_MODE');
+  if ($mode) {
+    return $mode == 'PRODUCTION';
   }
   return false;
+}
+
+function isTest() {
+  $mode = getenv('SMVC_MODE');
+  return $mode == 'TEST';
 }
 
 /**

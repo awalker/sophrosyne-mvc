@@ -28,9 +28,11 @@ class Controller {
   public function __construct($route, \Base\Dispatch $dispatch) {
     $this->route = $route;
     $this->dispatch = $dispatch;
-    $this->frameworkPackage = get_package();
-    $this->frameworkPackage->tag = isProduction() ? '' : ' Dev';
-    $this->layoutVersion = 'v' . $this->frameworkPackage->version . (isProduction() ? '' : '_dev') . $this->layoutVersion;
+    if (!isTest()) {
+      $this->frameworkPackage = get_package();
+      $this->frameworkPackage->tag = isProduction() ? '' : ' Dev';
+      $this->layoutVersion = 'v' . $this->frameworkPackage->version . (isProduction() ? '' : '_dev') . $this->layoutVersion;
+    }
   }
 
   public function flash($msg = null, $clear = false) {
