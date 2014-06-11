@@ -24,6 +24,6 @@
     },
 
     "require": {
-        "awalker/relation": "~0.0.2"
+        "awalker/relation": "dev-master@dev"
     }
 }
