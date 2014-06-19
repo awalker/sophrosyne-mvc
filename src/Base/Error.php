@@ -23,6 +23,7 @@ class Error {
     // Ignore errors less than the current error setting
     if((error_reporting() & $code) === 0) return TRUE;
     if(strpos($error, 'magic_quotes_gpc') !== false) return true;
+    if($code == E_WARNING && strpos($file, '/vendor/') !== false) return true;
     $user = IS_COMMAND ? 'COMMAND' : 'Not a command';
     $view = new View('system/error');
     $view->error = $error;
