@@ -4,6 +4,7 @@ namespace SMVC\Controller;
 class Asset extends \Base\Controller {
   public static $mapping = array(
     'scripts' => '\Base\JavascriptAssetView',
+    'images' => '\Base\PngAssetView',
     'scriptMap' => '\Base\SourceMapAssetView'
   );
   public function run() {
