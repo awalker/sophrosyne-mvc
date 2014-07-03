@@ -1,6 +1,6 @@
 <?php
 namespace Base;
-
+$IN_CONTROLLER = null;
 /**
  * The Base Controller class.
  */
@@ -26,11 +26,15 @@ class Controller {
   public $layoutVersion = '_l1';
 
   public function __construct($route, \Base\Dispatch $dispatch) {
+    global $IN_CONTROLLER;
+    $IN_CONTROLLER = $this;
     $this->route = $route;
     $this->dispatch = $dispatch;
-    $this->frameworkPackage = get_package();
-    $this->frameworkPackage->tag = isProduction() ? '' : ' Dev';
-    $this->layoutVersion = 'v' . $this->frameworkPackage->version . (isProduction() ? '' : '_dev') . $this->layoutVersion;
+    if (!isTest()) {
+      $this->frameworkPackage = get_package();
+      $this->frameworkPackage->tag = isProduction() ? '' : ' Dev';
+      $this->layoutVersion = 'v' . $this->frameworkPackage->version . (isProduction() ? '' : '_dev') . $this->layoutVersion;
+    }
   }
 
   public function flash($msg = null, $clear = false) {
@@ -65,6 +69,8 @@ class Controller {
   }
 
   public function initialize($method) {
+    global $IN_CONTROLLER;
+    $IN_CONTROLLER = $this;
     $this->session_start();
   }
 

@@ -48,14 +48,22 @@ function isId($id) {
   return false;
 }
 
-// FIXME: This is specific to one client. Generalize
 function isProduction() {
-  if(IS_COMMAND && stripos(getenv('PWD'), 'dev_area') === false) {
-    return true;
-  } else if(!IS_COMMAND && stripos(DOMAIN, 'demo.') === false) {
-    return true; // is production
+  $mode = getenv('SMVC_MODE');
+  if ($mode) {
+    switch ($mode) {
+      case 'PRODUCTION': return true; break;
+      case 'TEST': return false; break;
+      case 'DEV': return false; break;
+      case 'DEBUG': return false; break;
+    }
   }
-  return false;
+  return true;
+}
+
+function isTest() {
+  $mode = getenv('SMVC_MODE');
+  return $mode == 'TEST';
 }
 
 /**
@@ -107,7 +115,18 @@ function dump_truncated() {
   foreach (func_get_args() as $value)
   {
     if (is_object($value)) {
-      $string[] = h("<" . get_class($value) . ">");
+      $cn = get_class($value);
+      $str = "<" . $cn;
+      if (is_subclass_of($value, 'Base\Model') && is_callable(array($value, '__toString'))) {
+        try {
+          $tmp = (string)$value;
+          $str .= ': "' . $tmp . '"';
+        } catch(\Exception $e) {
+          // eat it
+          $str .= ': exp';
+        }
+      }
+      $string[] = h($str . ">");
     } else if (is_array($value)) {
       $string[] = h("<array of " . count($value) . " elements>");
     } elseif (is_null($value)) {

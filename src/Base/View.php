@@ -66,6 +66,9 @@ class View {
    */
   public function render()
   {
+    if ($this->__view != 'system/exception') {
+      $GLOBALS['IN_VIEW'] = $this;
+    }
     ob_start();
     extract((array) $this);
     require $this->getViewFilename();
