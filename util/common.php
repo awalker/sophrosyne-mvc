@@ -115,7 +115,17 @@ function dump_truncated() {
   foreach (func_get_args() as $value)
   {
     if (is_object($value)) {
-      $string[] = h("<" . get_class($value) . ">");
+      $cn = get_class($value);
+      $str = "<" . $cn;
+      if ($cn != 'Base\View' && is_callable($cn . '::' . '__toString')) {
+        try {
+          $tmp = (string)$value;
+          $str .= ': "' . $tmp . '"';
+        } catch(\Exception $e) {
+          // eat it
+        }
+      }
+      $string[] = h($str . ">");
     } else if (is_array($value)) {
       $string[] = h("<array of " . count($value) . " elements>");
     } elseif (is_null($value)) {
