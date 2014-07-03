@@ -66,6 +66,7 @@ class View {
    */
   public function render()
   {
+    $GLOBALS['IN_VIEW'] = $this;
     ob_start();
     extract((array) $this);
     require $this->getViewFilename();

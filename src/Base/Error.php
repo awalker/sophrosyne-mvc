@@ -28,12 +28,30 @@ class Error {
         return true;
       }
     }
-    $user = IS_COMMAND ? 'COMMAND' : 'Not a command';
+    $controller = null;
+    $brokenView = null;
+    if (array_key_exists('IN_CONTROLLER', $GLOBALS)) {
+      $controller = $GLOBALS['IN_CONTROLLER'];
+    }
+    if (array_key_exists('IN_VIEW', $GLOBALS)) {
+      $brokenView = $GLOBALS['IN_VIEW'];
+    }
+    $user = IS_COMMAND ? 'COMMAND' : ($controller && @$controller->loggedInUserId ? $controller->loggedInUserId : 'user not known');
     $view = new View('system/error');
     $view->error = $error;
     $view->code = $code;
     $view->isProduction = false;
-    send_error_email("[$code] $error [$file] ($line)", (string)$view, $user);
+    $strview = (string)$view;
+    if ($controller) {
+      $strview .= '<h2>Controller: ' .get_class($controller) . '</h2>' . dump_truncated_array((array)$controller);
+    }
+    if ($brokenView) {
+      $strview .= '<h2>View: ' . get_class($brokenView) . '</h2>' . dump_truncated_array((array)$brokenView);
+    }
+    if (\Base\Model::$last_query) {
+      $strview .= '<h2>Last SQL:</h2>' . dump(\Base\Model::$last_query);
+    }
+    send_error_email("[$code] $error [$file] ($line)", $strview, $user);
 
     log_message("[$code] $error [$file] ($line)");
     if(IS_COMMAND) {
