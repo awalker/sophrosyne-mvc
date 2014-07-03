@@ -202,6 +202,10 @@ class Model {
     where(sprintf('%s.%s', $joinTable->alias(), $fk), $this->id);
   }
 
+  public function __toString() {
+    return get_class($this) . ' #' . @$this->id;
+  }
+
   /*
         ____             __            __           __   __  ___     __  __              __
        / __ \_________  / /____  _____/ /____  ____/ /  /  |/  /__  / /_/ /_  ____  ____/ /____

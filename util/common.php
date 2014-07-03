@@ -117,12 +117,13 @@ function dump_truncated() {
     if (is_object($value)) {
       $cn = get_class($value);
       $str = "<" . $cn;
-      if ($cn != 'Base\View' && is_callable($cn . '::' . '__toString')) {
+      if ($cn != 'Base\View' && is_callable(array($value, '__toString'))) {
         try {
           $tmp = (string)$value;
           $str .= ': "' . $tmp . '"';
         } catch(\Exception $e) {
           // eat it
+          $str .= ': exp';
         }
       }
       $string[] = h($str . ">");
