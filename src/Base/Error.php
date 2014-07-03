@@ -28,10 +28,11 @@ class Error {
         return true;
       }
     }
+    global $IN_CONTROLLER;
     $controller = null;
     $brokenView = null;
-    if (array_key_exists('IN_CONTROLLER', $GLOBALS)) {
-      $controller = $GLOBALS['IN_CONTROLLER'];
+    if (isset($IN_CONTROLLER)) {
+      $controller = $IN_CONTROLLER;
     }
     if (array_key_exists('IN_VIEW', $GLOBALS)) {
       $brokenView = $GLOBALS['IN_VIEW'];

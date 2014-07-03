@@ -1,6 +1,6 @@
 <?php
 namespace Base;
-
+$IN_CONTROLLER = null;
 /**
  * The Base Controller class.
  */
@@ -26,7 +26,8 @@ class Controller {
   public $layoutVersion = '_l1';
 
   public function __construct($route, \Base\Dispatch $dispatch) {
-    $GLOBALS['IN_CONTROLLER'] = $this;
+    global $IN_CONTROLLER;
+    $IN_CONTROLLER = $this;
     $this->route = $route;
     $this->dispatch = $dispatch;
     if (!isTest()) {
@@ -68,7 +69,8 @@ class Controller {
   }
 
   public function initialize($method) {
-    $GLOBALS['IN_CONTROLLER'] = $this;
+    global $IN_CONTROLLER;
+    $IN_CONTROLLER = $this;
     $this->session_start();
   }
 
