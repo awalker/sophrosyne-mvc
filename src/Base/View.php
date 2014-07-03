@@ -1,5 +1,6 @@
 <?php
 namespace Base;
+$IN_VIEW = null;
 class View {
   public static $directory = NULL;
 
@@ -66,8 +67,8 @@ class View {
    */
   public function render()
   {
-    if ($this->__view != 'system/exception') {
-      $GLOBALS['IN_VIEW'] = $this;
+    if ($this->__view != 'system/exception' && $this->__view != 'system/error') {
+      $GLOBALS['IN_VIEW'] = &$this;
     }
     ob_start();
     extract((array) $this);
