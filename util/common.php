@@ -117,7 +117,7 @@ function dump_truncated() {
     if (is_object($value)) {
       $cn = get_class($value);
       $str = "<" . $cn;
-      if ($cn != 'Base\View' && is_callable(array($value, '__toString'))) {
+      if (is_subclass_of($value, 'Base\Model') && is_callable(array($value, '__toString'))) {
         try {
           $tmp = (string)$value;
           $str .= ': "' . $tmp . '"';
