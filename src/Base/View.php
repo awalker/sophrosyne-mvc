@@ -68,7 +68,11 @@ class View {
 
   public function processSingle($matches) {
     $processor = 'h';
-    return $processor(getFromContext($this, $matches[1]));
+    $out = getFromContext($this, $matches[1]);
+    if (is_object($out) && is_a($out, 'Base\View')) {
+      return (string)$out;
+    }
+    return $processor($out);
   }
 
   /**
