@@ -29,3 +29,5 @@ var_dump($v->process('Test follows: {{for items view testView}}'));
 var_dump($v->process('Test follows: {{for items2 view testView notfound notFoundView}}'));
 var_dump($v->process('partial test: {{partial testView}}'));
 var_dump($v->process('partial 2 test: {{partial june testView}}'));
+var_dump($v->process('ifpartial test: {{ifpartial name testView}}'));
+var_dump($v->process('ifpartial 2 test: {{ifpartial nope testView}}'));

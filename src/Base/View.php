@@ -69,10 +69,13 @@ class View {
   public function processSingle($matches) {
     $parts = explode(' ', trim($matches[1]));
     $path = $parts[0];
-    if($parts[0] == 'for') {
-      return $this->processFor($matches, $parts);
-    }elseif ($parts[0] == 'partial') {
-      return $this->processPartial($matches, $parts);
+    switch($parts[0]) {
+      case 'for':
+        return $this->processFor($matches, $parts); break;
+      case 'partial':
+        return $this->processPartial($matches, $parts); break;
+      case 'ifpartial':
+        return $this->processIfPartial($matches, $parts); break;
     }
     $processor = 'h';
     $out = getFromContext($this, $path);
@@ -82,10 +85,18 @@ class View {
     return $processor($out);
   }
 
-  public function processPartial($matches, $parts) {
+  public function processIfPartial($matches, $parts) {
+    $value = getFromContext($this, $parts[1]);
+    if ($value) {
+      return $this->processPartial($matches, $parts, 2);
+    }
+    return '';
+  }
+
+  public function processPartial($matches, $parts, $extra = 1) {
     $view = getFromContext($this, array_pop($parts));
     $that = $this;
-    if(count($parts) > 1) {
+    if(count($parts) > $extra) {
       $that = getFromContext($this, array_pop($parts));
     }
     $view->set((array)$that);
