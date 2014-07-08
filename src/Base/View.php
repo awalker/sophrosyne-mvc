@@ -76,6 +76,10 @@ class View {
         return $this->processPartial($matches, $parts); break;
       case 'ifpartial':
         return $this->processIfPartial($matches, $parts); break;
+      default:
+        if(count($parts) > 1) {
+          return '<strong style="color: red;">' . h($matches[0]) . '</strong>';
+        }
     }
     $processor = 'h';
     $out = getFromContext($this, $path);
