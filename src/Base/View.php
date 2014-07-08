@@ -71,6 +71,8 @@ class View {
     $path = $parts[0];
     if($parts[0] == 'for') {
       return $this->processFor($matches, $parts);
+    }elseif ($parts[0] == 'partial') {
+      return $this->processPartial($matches, $parts);
     }
     $processor = 'h';
     $out = getFromContext($this, $path);
@@ -78,6 +80,19 @@ class View {
       return (string)$out;
     }
     return $processor($out);
+  }
+
+  public function processPartial($matches, $parts) {
+    $view = getFromContext($this, array_pop($parts));
+    $that = $this;
+    if(count($parts) > 1) {
+      $that = getFromContext($this, array_pop($parts));
+    }
+    $view->set((array)$that);
+    if(property_exists($this, 'controller')) {
+      $view->controller = $this->controller;
+    }
+    return (string)$view;
   }
 
   public function processFor($matches, $parts) {
