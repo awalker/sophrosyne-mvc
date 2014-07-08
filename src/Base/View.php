@@ -98,7 +98,10 @@ class View {
   }
 
   public function processPartial($matches, $parts, $extra = 1) {
-    $view = getFromContext($this, array_pop($parts));
+    $view = getFromContext($this, $viewPath = array_pop($parts));
+    if (!$view or !is_object($view)) {
+      throw new \Exception("$viewPath did not resolve to a view");
+    }
     $that = $this;
     if(count($parts) > $extra) {
       $that = getFromContext($this, array_pop($parts));
@@ -119,6 +122,9 @@ class View {
     if(count($parts) > 4) { array_pop($parts); }
     $viewPath = array_pop($parts);
     $view = getFromContext($this, $viewPath);
+    if (!$view or !is_object($view)) {
+      throw new \Exception("$viewPath did not resolve to a view");
+    }
     $rendered = array();
     if ($collection && is_object($view) && is_a($view, 'Base\View')) {
       foreach($collection as $item) {
@@ -129,7 +135,11 @@ class View {
         $rendered[] = (string)$view;
       }
     } elseif($notFoundViewPath) {
-      return (string)getFromContext($this, $notFoundViewPath);
+      $view = getFromContext($this, $notFoundViewPath);
+      if (!$view or !is_object($view)) {
+        throw new \Exception("$notFoundViewPath did not resolve to a view");
+      }
+      return (string)$view;
     }
     return implode('', $rendered);
   }

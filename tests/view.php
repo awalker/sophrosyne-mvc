@@ -31,3 +31,4 @@ var_dump($v->process('partial test: {{partial testView}}'));
 var_dump($v->process('partial 2 test: {{partial june testView}}'));
 var_dump($v->process('ifpartial test: {{ifpartial name testView}}'));
 var_dump($v->process('ifpartial 2 test: {{ifpartial nope testView}}'));
+// var_dump($v->process('ifpartial 3 test: {{ifpartial name testViewNotThere}}'));
