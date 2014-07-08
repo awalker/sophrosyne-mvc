@@ -1,6 +1,5 @@
 <?php
-require('util/common.php');
-require('src/Base/View.php');
+require('vendor/autoload.php');
 
 class Rand {
   public function get() {
@@ -14,6 +13,6 @@ $obj->name = 'Adam';
 $obj->params = $a;
 $obj->rand = new Rand();
 
-$v = new \Base\View('', $obj);
+$v = new \Base\View('doesnotexist', $obj);
 
-var_dump($v->process('hi {{name}}! I say foo, you say {{params.foo}} my fav steve is {{params.steve}}. Rand is {{rand.get}}.'));
+var_dump($v->process('hi {{name}}! I say foo, you say {{ params.foo }} my fav steve is {{params.steve}}. Rand is {{rand.get}}. This should not be found {{not.found}}'));

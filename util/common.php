@@ -951,12 +951,16 @@ function getFromContext($context, $path) {
         $ctx = $ctx->$field();
       } elseif (property_exists($ctx, $field)) {
         $ctx = $ctx->$field;
+      } else {
+        $ctx = null;
       }
     } else if($field && $ctx && is_array($ctx) && array_key_exists($field, $ctx)) {
       $ctx = $ctx[$field];
+    } else {
+      $ctx = null;
     }
   }
-  if (is_object($ctx)) {
+  if (is_object($ctx) && $ctx != $context) {
     return (string)$ctx;
   } elseif (is_array($ctx)) {
     return null;
