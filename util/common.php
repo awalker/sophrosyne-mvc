@@ -962,8 +962,6 @@ function getFromContext($context, $path) {
   }
   if (is_object($ctx) && $ctx != $context) {
     return $ctx;
-  } elseif (is_array($ctx)) {
-    return null;
   }
   return $ctx;
 }

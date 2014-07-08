@@ -67,12 +67,41 @@ class View {
   }
 
   public function processSingle($matches) {
+    $parts = explode(' ', trim($matches[1]));
+    $path = $parts[0];
+    if($parts[0] == 'for') {
+      return $this->processFor($matches, $parts);
+    }
     $processor = 'h';
-    $out = getFromContext($this, $matches[1]);
+    $out = getFromContext($this, $path);
     if (is_object($out) && is_a($out, 'Base\View')) {
       return (string)$out;
     }
     return $processor($out);
+  }
+
+  public function processFor($matches, $parts) {
+    $collection = getFromContext($this, $parts[1]);
+    $notFoundViewPath = null;
+    if(count($parts) > 4) {
+      $notFoundViewPath = array_pop($parts);
+    }
+    if(count($parts) > 4) { array_pop($parts); }
+    $viewPath = array_pop($parts);
+    $view = getFromContext($this, $viewPath);
+    $rendered = array();
+    if ($collection && is_object($view) && is_a($view, 'Base\View')) {
+      foreach($collection as $item) {
+        $view->set((array)$item);
+        if(property_exists($this, 'controller')) {
+          $view->controller = $this->controller;
+        }
+        $rendered[] = (string)$view;
+      }
+    } elseif($notFoundViewPath) {
+      return (string)getFromContext($this, $notFoundViewPath);
+    }
+    return implode('', $rendered);
   }
 
   /**
