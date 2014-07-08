@@ -85,7 +85,7 @@ class View {
     require $this->getViewFilename();
     $clean = ob_get_clean();
 
-    return process($clean);
+    return $this->process($clean);
   }
 
 
