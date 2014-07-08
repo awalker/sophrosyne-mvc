@@ -105,6 +105,11 @@ class Controller {
     if(!isset($this->content)) return;
     if (!headers_sent()) {
       header('Content-Type: text/html; charset=utf-8');
+      $lang = 'en';
+      if (property_exists($this, 'lang')) {
+        $lang = $this->lang;
+      }
+      header('Content-Language: ' . $lang);
       if ($this->layoutVersion) {
         header('X-PJAX-Version: ' . $this->layoutVersion);
       }
