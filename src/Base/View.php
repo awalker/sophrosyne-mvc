@@ -61,6 +61,16 @@ class View {
     }
   }
 
+  public function process($clean) {
+    $pattern = '/\{\{(.+?)\}\}/';
+    return preg_replace_callback($pattern, array($this, 'processSingle'), $clean);
+  }
+
+  public function processSingle($matches) {
+    $processor = 'h';
+    return $processor(getFromContext($this, $matches[1]));
+  }
+
   /**
    * Renders the view without trapping exceptions
    * @return [type] [description]
@@ -73,7 +83,9 @@ class View {
     ob_start();
     extract((array) $this);
     require $this->getViewFilename();
-    return ob_get_clean();
+    $clean = ob_get_clean();
+
+    return process($clean);
   }
 
 

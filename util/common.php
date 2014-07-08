@@ -937,3 +937,29 @@ function join_url() {
   $url = implode('/', $pieces);
   return preg_replace('/\/+/', '/', $url);
 }
+
+function getFromContext($context, $path) {
+  $ctx = $context;
+  $in = $path;
+  if (is_string($in)) {
+    $in = explode('.', trim($in));
+  }
+  while(count($in)) {
+    $field = array_shift($in);
+    if ($field && $ctx && is_object($ctx)) {
+      if (is_callable(array($ctx, $field))) {
+        $ctx = $ctx->$field();
+      } elseif (property_exists($ctx, $field)) {
+        $ctx = $ctx->$field;
+      }
+    } else if($field && $ctx && is_array($ctx) && array_key_exists($field, $ctx)) {
+      $ctx = $ctx[$field];
+    }
+  }
+  if (is_object($ctx)) {
+    return null;
+  } elseif (is_array($ctx)) {
+    return null;
+  }
+  return $ctx;
+}
