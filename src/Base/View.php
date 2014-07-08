@@ -67,26 +67,30 @@ class View {
   }
 
   public function processSingle($matches) {
-    $parts = explode(' ', trim($matches[1]));
-    $path = $parts[0];
-    switch($parts[0]) {
-      case 'for':
-        return $this->processFor($matches, $parts); break;
-      case 'partial':
-        return $this->processPartial($matches, $parts); break;
-      case 'ifpartial':
-        return $this->processIfPartial($matches, $parts); break;
-      default:
-        if(count($parts) > 1) {
-          return '<strong style="color: red;">' . h($matches[0]) . '</strong>';
-        }
+    try {
+      $parts = explode(' ', trim($matches[1]));
+      $path = $parts[0];
+      switch($parts[0]) {
+        case 'for':
+          return $this->processFor($matches, $parts); break;
+        case 'partial':
+          return $this->processPartial($matches, $parts); break;
+        case 'ifpartial':
+          return $this->processIfPartial($matches, $parts); break;
+        default:
+          if(count($parts) > 1) {
+            return '<strong style="color: red;">' . h($matches[0]) . '</strong>';
+          }
+      }
+      $processor = 'h';
+      $out = getFromContext($this, $path);
+      if (is_object($out) && is_a($out, 'Base\View')) {
+        return (string)$out;
+      }
+      return $processor($out);
+    } catch(\Exception $e) {
+      return '<strong style="color: red;">' . h($matches[0]) . '<br>' . h($e->getMessage()) . '</strong>';
     }
-    $processor = 'h';
-    $out = getFromContext($this, $path);
-    if (is_object($out) && is_a($out, 'Base\View')) {
-      return (string)$out;
-    }
-    return $processor($out);
   }
 
   public function processIfPartial($matches, $parts) {
