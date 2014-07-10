@@ -8,6 +8,8 @@ class View {
 
   private $__view = NULL;
 
+  public $viewEnableFiltering = true;
+
   /**
    * Returns a new view object for the given view.
    *
@@ -67,6 +69,15 @@ class View {
   }
 
   public function processSingle($matches) {
+    if (!$this->viewEnableFiltering and $matches[1] == 'START FILTERING') {
+      $this->viewEnableFiltering = true;
+      return '';
+    }
+    if (!$this->viewEnableFiltering) {return $matches[0];}
+    if ($matches[1] == 'STOP FILTERING') {
+      $this->viewEnableFiltering = false;
+      return '';
+    }
     try {
       $parts = explode(' ', trim($matches[1]));
       $path = $parts[0];
@@ -83,11 +94,20 @@ class View {
           }
       }
       $processor = 'h';
+      $ps = explode('|', $path);
+      if(count($ps) > 1) {
+        $processor = $ps[0];
+        $path = $ps[1];
+      }
       $out = getFromContext($this, $path);
       if (is_object($out) && is_a($out, 'Base\View')) {
         return (string)$out;
       }
-      return $processor($out);
+      if($processor) {
+        return $processor($out);
+      } else {
+        return $out;
+      }
     } catch(\Exception $e) {
       return '<strong style="color: red;">' . h($matches[0]) . '<br>' . h($e->getMessage()) . '</strong>';
     }

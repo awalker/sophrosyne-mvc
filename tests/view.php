@@ -15,6 +15,8 @@ $obj->rand = new Rand();
 $june = new \stdClass();
 $june->name = "June";
 $obj->june = $june;
+$obj->amt = 6.21;
+$obj->enabled = 'filtering enabled';
 $obj->items = array(array('name'=>'1'), array('name'=>'2'), array('name'=>'3'));
 
 $v = new \Base\View('doesnotexist', $obj);
@@ -32,3 +34,5 @@ var_dump($v->process('partial 2 test: {{partial june testView}}'));
 var_dump($v->process('ifpartial test: {{ifpartial name testView}}'));
 var_dump($v->process('ifpartial 2 test: {{ifpartial nope testView}}'));
 var_dump($v->process('ifpartial 3 test: {{ifpartial name testViewNotThere}}'));
+var_dump($v->process('filter control test: {{enabled}} {{STOP FILTERING}} {{enabled}} {{START FILTERING}} {{enabled}}'));
+var_dump($v->process('processor test: {{dollar|amt}}'));
