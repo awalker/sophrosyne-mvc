@@ -135,7 +135,7 @@ class Model {
     foreach ($data as $key => $value) {
       $k = $this->filterServerFields($key, true);
       if($k) {
-        $fields[] = "$k";
+        $fields[] = $k == 'primary' ? "`$k`" : $k ;
         $values[] = ":$k";
         $params[$k] = $value;
       }
