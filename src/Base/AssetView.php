@@ -8,10 +8,10 @@ class AssetView {
   public static $prefix = '{{';
   public static $suffix = '}}';
 
-  private $__view = NULL;
-  private $__template = NULL;
-  private $__rendered = NULL;
-  private $values = array();
+  protected $__view = NULL;
+  protected $__template = NULL;
+  protected $__rendered = NULL;
+  protected $values = array();
 
   /**
    * Returns a new view object for the given view.
