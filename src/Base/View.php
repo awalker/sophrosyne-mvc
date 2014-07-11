@@ -69,12 +69,12 @@ class View {
   }
 
   public function processSingle($matches) {
-    if (!$this->viewEnableFiltering and $matches[1] == 'START FILTERING') {
+    if (!$this->viewEnableFiltering and trim($matches[1]) == 'START FILTERING') {
       $this->viewEnableFiltering = true;
       return '';
     }
     if (!$this->viewEnableFiltering) {return $matches[0];}
-    if ($matches[1] == 'STOP FILTERING') {
+    if (trim($matches[1]) == 'STOP FILTERING') {
       $this->viewEnableFiltering = false;
       return '';
     }
