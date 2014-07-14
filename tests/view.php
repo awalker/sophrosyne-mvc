@@ -1,6 +1,8 @@
 <?php
 require('vendor/autoload.php');
 
+use \Base\TemplateView as View;
+
 class Rand {
   public function get() {
     return rand();
@@ -19,11 +21,11 @@ $obj->amt = 6.21;
 $obj->enabled = 'filtering enabled';
 $obj->items = array(array('name'=>'1'), array('name'=>'2'), array('name'=>'3'));
 
-$v = new \Base\View('doesnotexist', $obj);
+$v = new View('doesnotexist', $obj);
 
-$vs = new \Base\View('tests/views/template', $obj);
+$vs = new View('tests/views/template', $obj);
 $v->testView = $vs;
-$v->notFoundView = new \Base\View('tests/views/notfound', $obj);
+$v->notFoundView = new View('tests/views/notfound', $obj);
 
 var_dump($v->process('hi {{name}}! I say foo, you say {{ params.foo }} my fav steve is {{params.steve}}. Rand is {{rand.get}}. This should not be found {{not.found}}'));
 

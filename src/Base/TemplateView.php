@@ -1,6 +1,5 @@
 <?php
 namespace Base;
-$IN_VIEW = null;
 class TemplateView extends View {
   private $__view = NULL;
 
@@ -20,43 +19,8 @@ class TemplateView extends View {
     }
   }
 
-
-  /**
-   * Set an array of values
-   *
-   * @param array $array of values
-   */
-  public function set($array)
-  {
-    foreach($array as $k => $v)
-    {
-      if(strpos($k, "\\") === false) {
-        $this->$k = $v;
-      }
-    }
-    return $this;
-  }
-
   public function getViewFilename() {
     return static::$directory . $this->__view . static::$ext;
-  }
-
-
-  /**
-   * Return the view's HTML
-   *
-   * @return string
-   */
-  public function __toString()
-  {
-    try {
-      return $this->render();
-    }
-    catch(\Exception $e)
-    {
-      Error::exception($e);
-      return '';
-    }
   }
 
   public function process($clean) {
