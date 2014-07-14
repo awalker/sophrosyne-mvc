@@ -76,7 +76,9 @@ class TemplateAssetView extends AssetView {
     // TODO: handle the empty collection
     $out = array("');", $this->newline('// ' . $matches[0]), $this->newline('_.each('), $collection, ', function(item, index, list) {');
     $this->indent++;
-    $out[] = $this->doView($viewPath);
+    $vn = $this->viewNum++;
+    $varName = 'viewCtx' . $vn;
+    $out[] = $this->doView($viewPath, $varName, 'item');
     $this->indent--;
     $out[] = $this->newline("});");
     $out[] = $this->newline("out.push('");
@@ -84,16 +86,20 @@ class TemplateAssetView extends AssetView {
     return implode('', $out);
   }
 
-  protected function doView($viewPath, $var = 'child') {
+  protected function doView($viewPath, $var = 'child', $item = 'item') {
     $out = array();
-    $out[] = $this->newline("// create new context");
-    $this->vars[$var] = $var;
-    $out[] = $this->newline("$var = {ctx: {}, helpers: ctx.helpers, controller: ctx.ctx, views: ctx.views};");
-    $out[] = $this->newline("// apply new values");
-    $out[] = $this->newline("$var.ctx = item;");
-    $out[] = $this->newline("// execute new view");
-    $out[] = $this->newline("out.push(ctx.views." . $viewPath . "($var));");
-    $out[] = $this->newline("$var = null;");
+    if ($item == 'ctx') {
+      $out[] = $this->newline("out.push(ctx.views." . $viewPath . "(ctx));");
+    } else {
+      $out[] = $this->newline("// create new context");
+      $this->vars[$var] = $var;
+      $out[] = $this->newline("$var = {ctx: {}, helpers: ctx.helpers, controller: ctx.ctx, views: ctx.views};");
+      $out[] = $this->newline("// apply new values");
+      $out[] = $this->newline("$var.ctx = $item;");
+      $out[] = $this->newline("// execute new view");
+      $out[] = $this->newline("out.push(ctx.views." . $viewPath . "($var));");
+      $out[] = $this->newline("$var = null;");
+    }
 
     return implode('', $out);
   }
@@ -101,7 +107,15 @@ class TemplateAssetView extends AssetView {
   protected function processPartial($matches, $parts) {
     $viewPath = array_pop($parts);
     $varName = 'viewCtx' . $this->viewNum++;
-    return "');" . $this->newline('// ' . $matches[0]) . $this->doView($viewPath, $varName) . $this->newline("out.push('");
+    $ctx = 'ctx';
+    $ictx = null;
+    if (count($parts) > 1) {
+      $ictx = array_pop($parts);
+    }
+    if ($ictx) {
+      $ctx = $this->getFromContext($ictx);
+    }
+    return "');" . $this->newline('// ' . $matches[0]) . $this->doView($viewPath, $varName, $ctx) . $this->newline("out.push('");
   }
 
   protected function processIfPartial($matches, $parts) {
@@ -115,7 +129,7 @@ class TemplateAssetView extends AssetView {
     $this->indent++;
     $viewPath = array_pop($parts);
     $varName = 'viewCtx' . $this->viewNum++;
-    $out[] = $this->doView($viewPath, $varName);
+    $out[] = $this->doView($viewPath, $varName, 'ctx');
     $this->indent--;
     $out[] = $this->newline("}");
     $out[] = $this->newline("out.push('");
