@@ -52,7 +52,7 @@ class TemplateAssetView extends AssetView {
       if($processor) {
         $out = 'ctx.helper.' . $processor . '(' . $out . ')'; //$processor($out);
       }
-      return "');". $this->newline('// ' . $matches[0]) . $this->newline("out.append($out);") . $this->newline("out.append('");
+      return "');". $this->newline('// ' . $matches[0]) . $this->newline("out.push($out);") . $this->newline("out.push('");
     } catch(\Exception $e) {
       return '<strong style="color: red;">' . h($matches[0]) . '<br>' . h($e->getMessage()) . '</strong>';
     }
@@ -79,7 +79,7 @@ class TemplateAssetView extends AssetView {
     $out[] = $this->doView($viewPath);
     $this->indent--;
     $out[] = $this->newline("});");
-    $out[] = $this->newline("out.append('");
+    $out[] = $this->newline("out.push('");
 
     return implode('', $out);
   }
@@ -92,7 +92,7 @@ class TemplateAssetView extends AssetView {
     $out[] = $this->newline("// apply new values");
     $out[] = $this->newline("$var.ctx = item;");
     $out[] = $this->newline("// execute new view");
-    $out[] = $this->newline("out.append(ctx.views." . $viewPath . "($var));");
+    $out[] = $this->newline("out.push(ctx.views." . $viewPath . "($var));");
     $out[] = $this->newline("$var = null;");
 
     return implode('', $out);
@@ -101,7 +101,7 @@ class TemplateAssetView extends AssetView {
   protected function processPartial($matches, $parts) {
     $viewPath = array_pop($parts);
     $varName = 'viewCtx' . $this->viewNum++;
-    return "');" . $this->newline('// ' . $matches[0]) . $this->doView($viewPath, $varName) . $this->newline("out.append('");
+    return "');" . $this->newline('// ' . $matches[0]) . $this->doView($viewPath, $varName) . $this->newline("out.push('");
   }
 
   protected function processIfPartial($matches, $parts) {
@@ -118,7 +118,7 @@ class TemplateAssetView extends AssetView {
     $out[] = $this->doView($viewPath, $varName);
     $this->indent--;
     $out[] = $this->newline("}");
-    $out[] = $this->newline("out.append('");
+    $out[] = $this->newline("out.push('");
     return implode('', $out);
   }
 
@@ -160,7 +160,7 @@ class TemplateAssetView extends AssetView {
     $prefix[] = $this->newline("var ");
     $this->vars = array('out = []');
     foreach ($lines as $line) {
-      $s = $this->newline ("out.append('");
+      $s = $this->newline ("out.push('");
       $s .= $this->embedInJS(preg_replace_callback($pattern,
         array($this, 'processSingle'), $line));
       $sections[] = $s . "\\n');";
@@ -174,6 +174,6 @@ class TemplateAssetView extends AssetView {
     $sections[] = $this->newline("");
     $prefix[] = implode(', ', $this->vars) . ';';
     $str = implode("", $prefix). implode("", $sections);
-    return str_replace("out.append('');", '', $str);
+    return str_replace("out.push('');", '', $str);
   }
 }
