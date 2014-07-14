@@ -37,6 +37,10 @@ class Controller {
     }
   }
 
+  public function viewFactory($path, $obj = null) {
+    return new View($path, $obj);
+  }
+
   public function flash($msg = null, $clear = false) {
     if($msg) {
       if(is_string($msg)) {
@@ -62,7 +66,7 @@ class Controller {
   public function setupCss() {
     $clientCss = '';
     foreach ($this->cssTemplates as $template) {
-      $view = new \Base\View($template, $this);
+      $view = $this->viewFactory($template, $this);
       $clientCss .= (string) $view;
     }
     $this->clientCss = $clientCss;
@@ -88,7 +92,7 @@ class Controller {
   public function show_403()
   {
     headers_sent() OR header('HTTP/1.0 403 Not authorized');
-    $this->content = new \Base\View('403');
+    $this->content = $this->viewFactory('403');
   }
 
   /**
@@ -98,7 +102,7 @@ class Controller {
   public function show_404()
   {
     headers_sent() OR header('HTTP/1.0 404 Page Not Found');
-    $this->content = new \Base\View('404');
+    $this->content = $this->viewFactory('404');
   }
 
   public function sendHtml() {
@@ -123,25 +127,25 @@ class Controller {
       return;
     }
     if($this->menuView) {
-      $this->menu = new \Base\View($this->menuView, $this);
+      $this->menu = $this->viewFactory($this->menuView, $this);
     }
     $this->setupCss();
     if(!isset($this->footer)) {
-      $this->footer = new \Base\View('layouts/footer', $this);
+      $this->footer = $this->viewFactory('layouts/footer', $this);
     }
     if(!isset($this->header)) {
-      $header = new \Base\View('layouts/header', $this);
+      $header = $this->viewFactory('layouts/header', $this);
       $header->set((array) $this);
       $this->header = $header;
     }
-    $layout = new \Base\View($this->template);
+    $layout = $this->viewFactory($this->template);
     $layout->set((array) $this);
     print $layout;
 
     $layout = NULL;
 
     if($this->_debug) {
-      print new \Base\View('system/debug', $this);
+      print $this->viewFactory('system/debug', $this);
     }
   }
 
