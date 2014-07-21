@@ -509,6 +509,11 @@ class Validation
     return preg_match('/[^a-zA-Z0-9\/\+=]/', $data);
   }
 
+  protected function regex_rule($data, $pat)
+  {
+    return preg_match($pat, $data);
+  }
+
 }
 
 // END
