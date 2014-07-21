@@ -634,7 +634,8 @@ function guid_bin()
 function guid_str($data = null) {
   if(is_null($data)) {
     $data = guid_bin();
-  } else if(is_string($data)) {
+  }
+  if(is_string($data) && preg_match('/^[0-9A-F\-]{32,36}$/i', $data)) {
     return $data;
   }
   return bin2hex($data);
