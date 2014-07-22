@@ -145,7 +145,7 @@ class Model {
 
     if(static::$_pkIsGuid) {
       if(!$this->$pk) {
-        $this->$pk = guid_bin();
+        $this->$pk = static::$_pkIsGuid == 'string' ? guid_str() : guid_bin();
       }
       $fields[] = $pk;
       $params['id'] = $this->$pk;
@@ -368,12 +368,22 @@ class Model {
   }
 
   public static function getFieldList() {
-    return '*';
+    if(static::$_pkIsGuid == 'string') {
+      $pk = static::$_pk;
+      return "*, HEX($pk) $pk";
+    } else {
+      return '*';
+    }
   }
 
   public static function findById($pk, $fields=null) {
     if(!$fields) $fields = static::getFieldList();
-    $sql = "SELECT " . $fields . " from " . static::getTablename() . " where " . static::getPkField() . " = :pk";
+    $sql = "SELECT " . $fields . " from " . static::getTablename() . " where " . static::getPkField() . " = ";
+    if (static::$_pkIsGuid == 'string') {
+      $sql .= 'UNHEX(:pk)';
+    } else {
+      $sql .= ':pk';
+    }
     $stmt = static::execute($sql, array('pk'=>$pk));
     return $stmt->fetchObject(get_called_class());
   }
@@ -457,7 +467,12 @@ class Model {
   }
 
   public static function destroyById($id) {
-    $sql = "DELETE FROM " . static::getTablename() . " WHERE " . static::getPkField() . " = :pk";
+    $sql = "DELETE FROM " . static::getTablename() . " WHERE " . static::getPkField() . " = ";
+    if(static::$_pkIsGuid == 'string') {
+      $sql .= 'UNHEX(:pk)';
+    } else {
+      $sql .= ':pk';
+    }
     return static::execute($sql, array('pk' => $id));
   }
 
