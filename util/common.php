@@ -253,7 +253,7 @@ function js_asset_url($path = NULL, array $params = NULL)
  */
 function h($string)
 {
-  return htmlspecialchars($string, ENT_QUOTES, 'utf-8');
+  return htmlspecialchars($string, ENT_QUOTES | ENT_HTML5 | ENT_DISALLOWED, 'utf-8');
 }
 
 /**
@@ -263,7 +263,7 @@ function h($string)
 function hm($string, $missing = 'missing', &$isOk)
 {
   if($string) {
-    return htmlspecialchars($string, ENT_QUOTES, 'utf-8');
+    return h($string);
   } else {
     $isOk = false;
     return '<span class="text-danger">' . h($missing) . '</span>';
