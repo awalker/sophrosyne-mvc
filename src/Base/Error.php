@@ -23,6 +23,7 @@ class Error {
     // Ignore errors less than the current error setting
     if((error_reporting() & $code) === 0) return TRUE;
     if(strpos($error, 'magic_quotes_gpc') !== false) return true;
+    if(strpos($error, 'htmlspecialchars(): Invalid multibyte') !== false) return true;
     if($code == E_WARNING && strpos($file, '/vendor/') !== false) {
       if (strpos($file, '/vendor/awalker/') === false) {
         return true;

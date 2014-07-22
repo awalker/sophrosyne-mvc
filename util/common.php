@@ -253,7 +253,8 @@ function js_asset_url($path = NULL, array $params = NULL)
  */
 function h($string)
 {
-  return htmlspecialchars($string, ENT_QUOTES | ENT_HTML5 | ENT_DISALLOWED, 'utf-8');
+  // Too bad, ENT_HTML5 | ENT_DISALLOWED require php 5.4.0
+  return htmlspecialchars($string, ENT_QUOTES, 'utf-8');
 }
 
 /**
