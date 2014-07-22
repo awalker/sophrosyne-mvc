@@ -150,10 +150,10 @@ class Model {
       $fields[] = $pk;
       if (static::$_pkIsGuid == 'string') {
         $params['id'] = $this->$pk;
-        $values[] = 'UNHEX(:id)';//'UNHEX(:id)';
+        $values[] = 'UNHEX(:id)';
       } else {
         $params['id'] = $this->$pk;
-        $values[] = ':id';//'UNHEX(:id)';
+        $values[] = ':id';
       }
     }
 
