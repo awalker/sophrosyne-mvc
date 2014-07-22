@@ -148,8 +148,13 @@ class Model {
         $this->$pk = static::$_pkIsGuid == 'string' ? guid_str() : guid_bin();
       }
       $fields[] = $pk;
-      $params['id'] = $this->$pk;
-      $values[] = ':id';//'UNHEX(:id)';
+      if (static::$_pkIsGuid == 'string') {
+        $params['id'] = $this->$pk;
+        $values[] = 'UNHEX(:id)';//'UNHEX(:id)';
+      } else {
+        $params['id'] = $this->$pk;
+        $values[] = ':id';//'UNHEX(:id)';
+      }
     }
 
     $fields = implode(', ', $fields);
