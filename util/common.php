@@ -132,7 +132,11 @@ function dump_truncated() {
     } elseif (is_null($value)) {
       $string[] = h("<NULL>");
     } else if (is_string($value)) {
-      $string[] = h(truncate($value, 80));
+      if (ctype_print($value)) {
+        $string[] = h(truncate($value, 80));
+      } else {
+        $string[] = h(printable($value));
+      }
     } else if (is_bool($value)) {
       $string[] = ($value ? 'TRUE' : 'FALSE');
     } else if (is_numeric($value)) {
@@ -885,6 +889,13 @@ function partial($view_path, $ctx = null, $extra = null) {
   return $view->render();
 }
 
+function printable($str) {
+  if (is_string($str)) {
+    return ctype_print($str) ? $str : quoted_printable_encode($str);
+  }
+  return $str;
+}
+
 function send_error_email($message, $stacktrace, $user = 'unknown') {
   if (!isProduction()) {
     return;
@@ -893,7 +904,7 @@ function send_error_email($message, $stacktrace, $user = 'unknown') {
   $mandril = new \Mandrill($conf->key);
 
   $tpcon = array();
-  $merge_vars = array('message' => $message, 'stacktrace' => $stacktrace, 'user' => $user);
+  $merge_vars = array('message' => dump_truncated($message), 'stacktrace' => ($stacktrace), 'user' => $user);
 
   $email_msg = array (
     'auto_text' => true,
