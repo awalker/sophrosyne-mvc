@@ -352,7 +352,7 @@ class Form
 
     if($this->label && $this->type != 'checkbox')
     {
-      $this->labelAttrs += array('for'=>$this->fieldName());
+      $this->labelAttrs += array('for'=>$this->id());
       $html .= \Base\HTML::tag('label', $this->label, $this->labelAttrs);
     }
     $ctrl = '';
