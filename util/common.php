@@ -829,7 +829,7 @@ function ago($in, $aboutStr = 'About ') {
 
 function admin_item_beer_image($in) {
   if($in) {
-    return '<img src="' . $in . '" width="32px">';
+    return '<img src="' . $in . '" width="32" alt="beer image">';
   }
   return '';
 }
