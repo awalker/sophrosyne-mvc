@@ -54,9 +54,12 @@ class HTML
    * @param array $attributes of additional tag settings
    * @return string
    */
-  public static function tag($tag, $text = '', array $attributes = NULL)
+  public static function tag($tag, $text = FALSE, array $attributes = NULL)
   {
-    return"\n<$tag" . self::attributes($attributes) . ($text === 0 ? ' />' : ">$text</$tag>");
+    if ($text==='' ) {
+      $text == FALSE;
+    }
+    return "\n<$tag" . self::attributes($attributes) . ($text === FALSE ? ' />' : ">$text</$tag>");
   }
 
 
