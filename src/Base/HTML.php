@@ -40,7 +40,11 @@ class HTML
     $h = '';
     foreach($attributes as $k => $v)
     {
-      $h .= " $k=\"" . h($v) . '"';
+      if($v === true) {
+        $h .= " $k";
+      } else {
+        $h .= " $k=\"" . h($v) . '"';
+      }
     }
     return $h;
   }
